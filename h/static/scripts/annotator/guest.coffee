@@ -15,7 +15,6 @@ module.exports = class Guest extends Annotator
   options:
     TextHighlights: {}
     EnhancedAnchoring: {}
-    DomTextMapper: {}
     TextSelection: {}
     TextRange: {}
     TextPosition: {}

@@ -1,15 +1,79 @@
 Annotator = require('annotator')
 $ = Annotator.$
 
-# Fake two-phase / pagination support, used for HTML documents
-class DummyDocumentAccess
+
+# Node types that are not considered by the `Node.textContent` interface.
+SKIP_NODES = [Node.COMMENT_NODE, Node.CDATA_SECTION_NODE]
+
+
+# Locate the innermost child node of a container at the given text offset.
+#
+# Returns an Object with the keys `container` and `offset` where the value
+# of the `container` key is the innermost node that contains the given offset
+findPosition = (offset, container) ->
+  if offset == 0
+    return {container, offset}
+
+  for child in container.childNodes when child.nodeType not in SKIP_NODES
+    if child.textContent.length >= offset
+      return findPosition(offset, child)
+    else
+      offset -= child.textContent.length
+
+  return {container, offset}
+
+
+class DefaultAccessStrategy
 
   @applicable: -> true
+  getCorpus: -> window.document.documentElement.textContent
   getPageIndex: -> 0
   getPageCount: -> 1
   getPageIndexForPos: -> 0
   isPageMapped: -> true
   scan: ->
+
+  getStartPosForNode: (node) ->
+    offset = 0
+
+    while node?
+      while node.previousSibling is null
+        node = node.parentNode
+
+      cur = node
+      while cur = cur.previousSibling
+        continue if cur.nodeType in SKIP_NODES
+        return offset if cur.nodeType is Node.DOCUMENT_TYPE_NODE
+        offset += cur.textContent.length
+
+      node = node.parentNode
+
+    return offset
+
+  getEndPosForNode: (node) ->
+    offset = node.textContent.length
+    return offset + this.getStartPosForNode(node)
+
+  getContextForCharRange: (start, end) ->
+    corpus = this.getCorpus()
+    return [corpus.substr(start-32, 32), corpus.substr(end, 32)]
+
+  getMappingsForCharRange: (start, end) ->
+    # Start from the document element
+    root = window.document.documentElement
+
+    # Find the start and end positions of the given offsets
+    start = findPosition(start, root)
+    end = findPosition(end, root)
+
+    # Create a Range with boundary points set to the positions found
+    range = window.document.createRange()
+    range.setStart(start.container, start.offset)
+    range.setEnd(end.container, end.offset)
+
+    # Return a section map providing this range for page 0.
+    return sections: [{realRange: range}]
+
 
 # Abstract anchor class.
 class Anchor
@@ -133,14 +197,12 @@ class Annotator.Plugin.EnhancedAnchoring extends Annotator.Plugin
   # Initializes the available document access strategies
   _setupDocumentAccessStrategies: ->
     @documentAccessStrategies = [
-      # Default dummy strategy for simple HTML documents.
-      # The generic fallback.
-      name: "Dummy"
-      mapper: DummyDocumentAccess
+      # Default strategy for simple HTML documents.
+      name: "Basic"
+      mapper: DefaultAccessStrategy
     ]
 
     this
-
 
   # Initializes the components used for analyzing the document
   chooseAccessPolicy: ->

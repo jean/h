@@ -49,7 +49,6 @@
     "angular": "./h/static/scripts/vendor/angular.js",
     "angular-mock": "./h/static/scripts/vendor/angular-mocks.js",
     "diff-match-patch": "./h/static/scripts/vendor/diff_match_patch_uncompressed.js",
-    "dom-text-mapper": "./h/static/scripts/vendor/dom_text_mapper.js",
     "dom-text-matcher": "./h/static/scripts/vendor/dom_text_matcher.js",
     "jquery": "./h/static/scripts/vendor/jquery.js",
     "jquery-scrollintoview": "./h/static/scripts/vendor/jquery.scrollintoview.js",
@@ -78,7 +77,6 @@
     },
     "angular-mock": "global:angular.mock",
     "diff-match-patch": "diff_match_patch",
-    "dom-text-mapper": "DomTextMapper",
     "dom-text-matcher": "DomTextMatcher",
     "jquery": "$",
     "jquery-scrollintoview": {

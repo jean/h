@@ -22,10 +22,10 @@ class TextPositionAnchor extends Annotator.Anchor
   # This is how we create a highlight out of this kind of anchor
   _getSegment: (page) ->
 
-    # First we create the range from the stored stard and end offsets
+    # First we create the range from the stored start and end offsets
     mappings = @anchoring.document.getMappingsForCharRange @start, @end, [page]
 
-    # Get the wanted range out of the response of DTM
+    # Get the wanted range out of the response
     realRange = mappings.sections[page].realRange
 
     # Get a BrowserRange
@@ -112,7 +112,6 @@ class Annotator.Plugin.TextPosition extends Annotator.Plugin
     document = @anchoring.document
 
     corpus = document.getCorpus?()
-    # This won't work without d-t-m
     return null unless corpus
 
     content = corpus[selector.start ... selector.end].trim()
@@ -133,4 +132,3 @@ class Annotator.Plugin.TextPosition extends Annotator.Plugin
       (document.getPageIndexForPos selector.start),
       (document.getPageIndexForPos selector.end),
       currentQuote
-

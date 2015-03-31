@@ -30,11 +30,7 @@ class Annotator.Plugin.FuzzyTextAnchors extends Annotator.Plugin
       code: this.fuzzyMatching
 
   twoPhaseFuzzyMatching: (annotation, target) =>
-
     document = @anchoring.document
-
-    # This won't work without DTM
-    return unless document.getInfoForNode?
 
     # Fetch the quote and the context
     quoteSelector = @anchoring.findSelector target.selector, "TextQuoteSelector"
@@ -79,11 +75,7 @@ class Annotator.Plugin.FuzzyTextAnchors extends Annotator.Plugin
       unless match.exact then match.exactExceptCase
 
   fuzzyMatching: (annotation, target) =>
-
     document = @anchoring.document
-
-    # This won't work without DTM
-    return unless document.getInfoForNode?
 
     # Fetch the quote
     quoteSelector = @anchoring.findSelector target.selector, "TextQuoteSelector"
@@ -131,4 +123,3 @@ class Annotator.Plugin.FuzzyTextAnchors extends Annotator.Plugin
       match.found,
       unless match.exact then match.comparison.diffHTML,
       unless match.exact then match.exactExceptCase
-

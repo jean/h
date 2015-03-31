@@ -33,14 +33,12 @@ require('./annotator/plugin/fragmentselector');
 
 // Anchoring dependencies
 require('diff-match-patch')
-require('dom-text-mapper')
 require('dom-text-matcher')
 require('page-text-mapper-core')
 require('text-match-engines')
 
 // Anchoring plugins
 require('./annotator/plugin/enhancedanchoring');
-require('./annotator/plugin/domtextmapper');
 require('./annotator/plugin/fuzzytextanchors');
 require('./annotator/plugin/pdf');
 require('./annotator/plugin/textquote');
